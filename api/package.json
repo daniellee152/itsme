@@ -11,10 +11,16 @@
   "author": "dat le",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.3",
     "morgan": "^1.9.1",
     "validator": "^12.1.0"
+  },
+  "devDependencies": {
+    "ndb": "^1.1.5"
   }
 }

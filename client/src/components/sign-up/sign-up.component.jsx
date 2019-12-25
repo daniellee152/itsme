@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './sign-up.styles.scss';
+import axios from 'axios';
 
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
@@ -10,6 +11,34 @@ class SignUp extends Component {
     email: '',
     password: '',
     confirmPassword: ''
+  };
+
+  handleChange = event => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+
+  handleSubmit = async event => {
+    const { displayName, email, password, confirmPassword } = this.state;
+    event.preventDefault();
+    axios({
+      method: 'post',
+      url: 'http://localhost:9000/api/v1/users/signup',
+      data: {
+        name: displayName,
+        email,
+        password,
+        confirmPassword
+      },
+      validateStatus: status => {
+        return true; // I'm always returning true, you may want to do it depending on the status received
+      }
+    })
+      .catch(error => {})
+      .then(response => {
+        console.log(response);
+        // this is now called!
+      });
   };
 
   render() {
@@ -24,6 +53,8 @@ class SignUp extends Component {
             name="displayName"
             value={displayName}
             label="Display Name"
+            handleChange={this.handleChange}
+            autoComplete="on"
             required
           />
 
@@ -32,6 +63,8 @@ class SignUp extends Component {
             name="email"
             value={email}
             label="Email"
+            handleChange={this.handleChange}
+            autoComplete="on"
             required
           />
 
@@ -40,6 +73,8 @@ class SignUp extends Component {
             name="password"
             value={password}
             label="Password"
+            handleChange={this.handleChange}
+            autoComplete="on"
             required
           />
 
@@ -48,6 +83,8 @@ class SignUp extends Component {
             name="confirmPassword"
             value={confirmPassword}
             label="Confirm Password"
+            handleChange={this.handleChange}
+            autoComplete="on"
             required
           />
 

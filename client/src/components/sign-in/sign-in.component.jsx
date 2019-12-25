@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import './sign-in.styles.scss';
 
 import FormInput from '../form-input/form-input.component';
@@ -10,24 +11,57 @@ class SignIn extends Component {
     password: ''
   };
 
+  handleSubmit = event => {
+    const { email, password } = this.state;
+    event.preventDefault();
+    axios({
+      method: 'post',
+      url: 'http://localhost:9000/api/v1/users/login',
+      data: {
+        email,
+        password
+      },
+      validateStatus: status => {
+        return true; // I'm always returning true, you may want to do it depending on the status received
+      },
+      headers: { Authorization: 'XMLHttpRequest' }
+    })
+      .catch(error => {})
+      .then(response => {
+        console.log(response);
+        // this is now called!
+      });
+  };
+
+  handleChange = event => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+
   render() {
     return (
       <div className="sign-in">
         <h2>I already have an account</h2>
         <span>Sign in with your email and password</span>
 
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <FormInput
             name="email"
             type="email"
             value={this.state.email}
+            handleChange={this.handleChange}
             label="Email"
+            autoComplete="on"
+            required
           />
           <FormInput
             name="password"
             type="password"
             value={this.state.password}
+            handleChange={this.handleChange}
             label="Password"
+            autoComplete="on"
+            required
           />
           <div className="buttons">
             <CustomButton type="submit" value="Submit Form">
