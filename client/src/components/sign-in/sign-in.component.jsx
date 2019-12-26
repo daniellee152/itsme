@@ -23,13 +23,13 @@ class SignIn extends Component {
       },
       validateStatus: status => {
         return true; // I'm always returning true, you may want to do it depending on the status received
-      },
-      headers: { Authorization: 'XMLHttpRequest' }
+      }
     })
       .catch(error => {})
-      .then(response => {
-        console.log(response);
-        // this is now called!
+      .then(res => {
+        localStorage.setItem('token', res.data.token);
+        this.setState({ email: '', password: '' });
+        window.location = '/';
       });
   };
 

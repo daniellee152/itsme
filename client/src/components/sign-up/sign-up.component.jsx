@@ -35,9 +35,15 @@ class SignUp extends Component {
       }
     })
       .catch(error => {})
-      .then(response => {
-        console.log(response);
-        // this is now called!
+      .then(res => {
+        localStorage.setItem('token', res.data.token);
+        window.location = '/';
+        this.setState({
+          displayName: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        });
       });
   };
 
