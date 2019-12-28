@@ -1,7 +1,7 @@
 # eCommerce Website
 In this project, I have used MERN (MongoDB, Express.js, React, Node.js) stack to build the eCommerce website. 
 The website allows users to login, signup, reset password, adding items to cart, make payment using Stripe. 
-React-Redux have been used to manage state. 
+React-Redux have been used to manage state on front-end. 
 
 ## Project Instruction 
 
