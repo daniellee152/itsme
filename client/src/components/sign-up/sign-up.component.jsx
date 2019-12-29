@@ -36,7 +36,6 @@ class SignUp extends Component {
     })
       .catch(error => {})
       .then(res => {
-        console.log(res);
         localStorage.setItem('token', res.data.token);
         window.location = '/';
         this.setState({
