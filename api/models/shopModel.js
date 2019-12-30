@@ -1,13 +1,22 @@
 const mongoose = require('mongoose');
 
 const shopSchema = new mongoose.Schema({
-  title: String,
+  title: {
+    type: String,
+    required: ['true', 'Collection need a title']
+  },
   routeName: String,
   items: [
     {
-      name: String,
+      name: {
+        type: String,
+        required: ['true', 'Item need to have a name']
+      },
       imageUrl: String,
-      price: Number
+      price: {
+        type: Number,
+        required: ['true', 'An item need to have a price']
+      }
     }
   ]
 });

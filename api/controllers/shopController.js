@@ -14,8 +14,16 @@ exports.createCollections = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    data: newCollection
+    newCollection
   });
 });
 
-exports.getCollection = catchAsync(async (req, res, next) => {});
+exports.getCollection = catchAsync(async (req, res, next) => {
+  const { collectionId } = req.params;
+  const collection = await Shop.find({ title: collectionId });
+
+  res.status(200).json({
+    status: 'success',
+    collection
+  });
+});
