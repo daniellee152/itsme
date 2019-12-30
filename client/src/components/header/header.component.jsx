@@ -5,7 +5,10 @@ import { ReactComponent as Logo } from '../assets/crown.svg';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
+import { selectCartHidden } from './../../redux/cart/cart.selectors';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
+import CartIcon from '../cart-icon/cart-icon.component';
+import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 
 class Header extends Component {
   handleLogout = () => {
@@ -15,12 +18,13 @@ class Header extends Component {
   };
 
   render() {
-    const { currentUser } = this.props;
+    const { currentUser, hidden } = this.props;
     return (
       <div className="header">
         <Link to="/" className="logo-container">
           <Logo className="logo" />
         </Link>
+
         <div className="options">
           <Link className="option" to="/aboutme">
             ABOUT ME
@@ -34,6 +38,8 @@ class Header extends Component {
               SIGN IN
             </Link>
           )}
+          <CartIcon />
+          {hidden ? null : <CartDropdown />}
         </div>
       </div>
     );
@@ -41,7 +47,8 @@ class Header extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
+  hidden: selectCartHidden
 });
 
 export default connect(mapStateToProps)(Header);
