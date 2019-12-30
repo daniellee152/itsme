@@ -31,9 +31,9 @@ class CollectionPage extends Component {
     }
     return (
       <div className="collection-page">
-        <h2 className="title">{match.params.collectionID}</h2>
+        <h2 className="title">{match.params.collectionID.toUpperCase()}</h2>
         <div className="items">
-          {Object.values(items).forEach(item => (
+          {items.map(item => (
             <CollectionItem key={item._id} item={item} />
           ))}
         </div>
