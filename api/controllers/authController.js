@@ -5,8 +5,17 @@ const User = require('./../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const sendEmail = require('./../utils/email');
+const { OAuth2Client } = require('google-auth-library');
 
 exports.signup = catchAsync(async (req, res, next) => {
+  // 1) if user is existed
+  const exsitUser = await User.find({ email: req.body.email });
+
+  if (exsitUser) {
+    return next(new AppError('Email is already used', 404));
+  }
+
+  // 2) User is not exsited, updata user and send token
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -31,7 +40,6 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!email || !password) {
     return next(new AppError('Please provide an email and password', 400));
   }
-
   // 2) Check if user exits and password is correct
   const user = await User.findOne({ email }).select('+password');
   if (!user || !(await user.correctPassword(password, user.password))) {
@@ -41,7 +49,76 @@ exports.login = catchAsync(async (req, res, next) => {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
+  res.status(200).json({
+    status: 'success',
+    token
+  });
+});
 
+exports.googleSignup = catchAsync(async (req, res, next) => {
+  // 1) Verify and get payload of google Auth
+  const client = new OAuth2Client(
+    '595159769075-feo109969di1tvgkb1s9vg6rkct98hv3.apps.googleusercontent.com'
+  );
+  const ticket = await client.verifyIdToken({
+    idToken: req.body.token,
+    audience:
+      '595159769075-feo109969di1tvgkb1s9vg6rkct98hv3.apps.googleusercontent.com'
+  });
+  const payload = ticket.getPayload();
+  const googleID = payload.sub;
+
+  // 2) User is exits
+  const exsitUser = await User.findOne({ googleID });
+  if (exsitUser) {
+    const token = jwt.sign({ id: exsitUser._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN
+    });
+    return res.status(200).json({
+      status: 'success',
+      user: exsitUser,
+      token
+    });
+  }
+
+  // 3) User is not exits
+  const newUser = await User.create({
+    name: req.body.name,
+    email: req.body.email,
+    googleID: googleID
+  });
+  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN
+  });
+  res.status(200).json({
+    status: 'success',
+    user: newUser,
+    token
+  });
+});
+
+exports.googleLogin = catchAsync(async (req, res, next) => {
+  // 1) Verify and get payload of google Auth
+  const client = new OAuth2Client(
+    '595159769075-feo109969di1tvgkb1s9vg6rkct98hv3.apps.googleusercontent.com'
+  );
+  const ticket = await client.verifyIdToken({
+    idToken: req.body.token,
+    audience:
+      '595159769075-feo109969di1tvgkb1s9vg6rkct98hv3.apps.googleusercontent.com'
+  });
+  const payload = ticket.getPayload();
+  const googleID = payload.sub;
+
+  // 2) Check if  googId is correct
+  const user = await await User.findOne({ googleID });
+  if (!user) {
+    return next(new AppError('Please sign up!', 404));
+  }
+  // 3) If oke, send token to client
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN
+  });
   res.status(200).json({
     status: 'success',
     token

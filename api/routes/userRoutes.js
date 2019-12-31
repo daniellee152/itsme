@@ -7,6 +7,10 @@ const authController = require('../controllers/authController');
 //auth
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
+
+router.post('/googleSignup', authController.googleSignup);
+router.post('/googleLogin', authController.googleLogin);
+
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 router.patch(
@@ -16,7 +20,6 @@ router.patch(
 );
 
 //user
-router.route('/').get(userController.getAllUsers);
 router.route('/:id').get(authController.protect, userController.getUser);
 
 module.exports = router;

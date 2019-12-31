@@ -23,13 +23,13 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Please provide your password'],
+    // required: [true, 'Please provide your password'],
     minlength: 3,
     select: false //not include in the ouput
   },
   confirmPassword: {
     type: String,
-    required: [true, 'Please provide your password'],
+    // required: [true, 'Please provide your password'],
     validate: {
       // this only works on CREATE and SAVE
       validator: function(el) {
@@ -38,6 +38,7 @@ const userSchema = new mongoose.Schema({
       message: 'Password are not the same'
     }
   },
+  googleID: String,
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date
